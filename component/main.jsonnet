@@ -7,11 +7,15 @@ local inv = kap.inventory();
 local params = inv.parameters.fleetlock;
 local appName = 'fleetlock';
 
-local namespace = kube.Namespace(params.namespace) {
+local namespace = kube.Namespace(params.namespace.name) {
   metadata+: {
+    annotations+: {
+
+    } + params.namespace.annotations,
     labels+: {
-      'app.kubernetes.io/name': params.namespace,
-    },
+      'app.kubernetes.io/managed-by': 'commodore',
+      'app.kubernetes.io/name': params.namespace.name,
+    } + params.namespace.labels,
   },
 };
 
@@ -20,11 +24,19 @@ local namespace = kube.Namespace(params.namespace) {
 
 local serviceAccount = kube.ServiceAccount(appName) {
   metadata+: {
-    namespace: params.namespace,
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+    namespace: params.namespace.name,
   },
 };
 
 local clusterRole = kube.ClusterRole(appName) {
+  metadata+: {
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+  },
   rules: [
     { apiGroups: [ '' ], resources: [ 'nodes' ], verbs: [ 'list', 'patch' ] },
     { apiGroups: [ '' ], resources: [ 'pods' ], verbs: [ 'list' ] },
@@ -33,13 +45,21 @@ local clusterRole = kube.ClusterRole(appName) {
 };
 
 local clusterRoleBinding = kube.ClusterRoleBinding(appName) {
+  metadata+: {
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+  },
   subjects_: [ serviceAccount ],
   roleRef_: clusterRole,
 };
 
 local role = kube.Role(appName) {
   metadata+: {
-    namespace: params.namespace,
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+    namespace: params.namespace.name,
   },
   rules: [
     { apiGroups: [ 'coordination.k8s.io' ], resources: [ 'leases' ], verbs: [ 'create', 'get', 'update' ] },
@@ -48,7 +68,10 @@ local role = kube.Role(appName) {
 
 local roleBinding = kube.RoleBinding(appName) {
   metadata+: {
-    namespace: params.namespace,
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+    namespace: params.namespace.name,
   },
   subjects_: [ serviceAccount ],
   roleRef_: role,
@@ -58,6 +81,11 @@ local roleBinding = kube.RoleBinding(appName) {
 // Deployment
 
 local deployment = kube.Deployment(appName) {
+  metadata+: {
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+  },
   spec+: {
     replicas: params.replicaCount,
     template+: {
@@ -70,7 +98,7 @@ local deployment = kube.Deployment(appName) {
           default: kube.Container(appName) {
             image: '%(registry)s/%(repository)s:%(tag)s' % params.images.fleetlock,
             env_:: {
-              NAMESPACE: params.namespace,
+              NAMESPACE: params.namespace.name,
             },
             ports_:: {
               http: { containerPort: 8080 },
@@ -95,6 +123,11 @@ local deployment = kube.Deployment(appName) {
 };
 
 local service = kube.Service(appName) {
+  metadata+: {
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+  },
   target_pod:: deployment.spec.template,
   spec+: {
     clusterIP: params.service.clusterIP,
