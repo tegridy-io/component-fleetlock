@@ -5,8 +5,18 @@ The parent key for all of the following parameters is `fleetlock`.
 == `namespace`
 
 [horizontal]
-type:: string
-default:: `syn-fleetlock`
+type:: dictionary
+default::
++
+[source,yaml]
+----
+annotations: {} <1>
+labels: {} <2>
+name: `syn-fleetlock` <3>
+----
+<1> Additional namespace annotations.
+<2> Additional namespace labels.
+<3> Name of the namespace.
 
 The namespace in which to deploy this component.
 

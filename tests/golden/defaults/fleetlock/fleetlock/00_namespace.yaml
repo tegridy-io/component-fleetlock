@@ -3,6 +3,7 @@ kind: Namespace
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     app.kubernetes.io/name: syn-fleetlock
     name: syn-fleetlock
   name: syn-fleetlock

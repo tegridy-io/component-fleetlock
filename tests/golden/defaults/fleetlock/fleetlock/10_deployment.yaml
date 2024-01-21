@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     name: fleetlock
   name: fleetlock
 spec:
@@ -11,6 +12,7 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
+      app.kubernetes.io/managed-by: commodore
       name: fleetlock
   strategy:
     rollingUpdate:
@@ -21,6 +23,7 @@ spec:
     metadata:
       annotations: {}
       labels:
+        app.kubernetes.io/managed-by: commodore
         name: fleetlock
     spec:
       containers:

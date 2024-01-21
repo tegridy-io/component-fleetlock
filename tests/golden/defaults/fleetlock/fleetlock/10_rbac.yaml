@@ -3,6 +3,7 @@ kind: ServiceAccount
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     name: fleetlock
   name: fleetlock
   namespace: syn-fleetlock
@@ -12,6 +13,7 @@ kind: ClusterRole
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     name: fleetlock
   name: fleetlock
 rules:
@@ -40,6 +42,7 @@ kind: ClusterRoleBinding
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     name: fleetlock
   name: fleetlock
 roleRef:
@@ -56,6 +59,7 @@ kind: Role
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     name: fleetlock
   name: fleetlock
   namespace: syn-fleetlock
@@ -74,6 +78,7 @@ kind: RoleBinding
 metadata:
   annotations: {}
   labels:
+    app.kubernetes.io/managed-by: commodore
     name: fleetlock
   name: fleetlock
   namespace: syn-fleetlock

@@ -1,7 +1,11 @@
 parameters:
   fleetlock:
     =_metadata: {}
-    namespace: syn-fleetlock
+
+    namespace:
+      annotations: {}
+      labels: {}
+      name: syn-fleetlock
 
     images:
       fleetlock:
