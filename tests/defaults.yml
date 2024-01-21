@@ -1,6 +1,3 @@
 # Overwrite parameters here
 
-parameters:
-  fleetlock:
-    prometheus:
-      enabled: true
+# parameters: {...}

@@ -1,13 +1,13 @@
 {
   "template": "https://github.com/projectsyn/commodore-component-template.git",
-  "commit": "2e09191ab5f2b26f2098a1215594b561c6a59d97",
+  "commit": "7803d07f1d79fc8b902fcafbb336b6b0a4b57b90",
   "checkout": "main",
   "context": {
     "cookiecutter": {
       "name": "Fleetlock",
       "slug": "fleetlock",
       "parameter_key": "fleetlock",
-      "test_cases": "defaults",
+      "test_cases": "defaults metrics",
       "add_lib": "n",
       "add_pp": "n",
       "add_golden": "y",
