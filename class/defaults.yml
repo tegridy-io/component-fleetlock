@@ -24,3 +24,7 @@ parameters:
         memory: 30Mi
       limits:
         memory: 50Mi
+
+    prometheus:
+      enabled: false
+      service: {}

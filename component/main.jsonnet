@@ -136,10 +136,35 @@ local service = kube.Service(appName) {
 };
 
 
+// Monitoring
+
+local serviceMonitor = kube._Object('monitoring.coreos.com/v1', 'ServiceMonitor', appName) {
+  metadata+: {
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+  },
+  spec+: {
+    selector: {
+      matchLabels: {
+        name: appName,
+      },
+    },
+    endpoints: [ {
+      path: '/metrics',
+      port: 'http',
+      scheme: 'http',
+      interval: '30s',
+    } ],
+  } + params.prometheus.service,
+};
+
+
 // Define outputs below
 {
   '00_namespace': namespace,
   '10_deployment': deployment,
   '10_service': service,
   '10_rbac': [ serviceAccount, clusterRole, clusterRoleBinding, role, roleBinding ],
+  [if params.prometheus.enabled then '10_monitoring']: serviceMonitor,
 }
