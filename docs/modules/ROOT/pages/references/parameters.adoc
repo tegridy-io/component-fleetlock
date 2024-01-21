@@ -11,6 +11,51 @@ default:: `syn-fleetlock`
 The namespace in which to deploy this component.
 
 
+== `replicaCount`
+
+[horizontal]
+type:: int
+default:: 1
+
+Number of replicas of this component.
+
+
+== `service`
+
+[horizontal]
+type:: dict
+default::
++
+[source,yaml]
+----
+service:
+  clusterIP: 10.43.0.11
+----
+
+The clusterIP of the service, used by Zincati service.
+
+See https://github.com/poseidon/fleetlock#usage[Fleetlock Docu] for more information.
+
+
+== `resources`
+
+[horizontal]
+type:: dict
+default::
++
+[source,yaml]
+----
+resources:
+  requests:
+    cpu: 30m
+    memory: 30Mi
+  limits:
+    memory: 50Mi
+----
+
+The resources requested by this component.
+
+
 == Example
 
 [source,yaml]
