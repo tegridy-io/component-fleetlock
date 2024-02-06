@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations: {}
+  labels:
+    app.kubernetes.io/managed-by: commodore
+    name: fleetlock
+  name: fleetlock
+spec:
+  minReadySeconds: 30
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/managed-by: commodore
+      name: fleetlock
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        app.kubernetes.io/managed-by: commodore
+        name: fleetlock
+    spec:
+      containers:
+        - args: []
+          env:
+            - name: NAMESPACE
+              value: syn-fleetlock
+          image: quay.io/poseidon/fleetlock:v0.4.0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+              scheme: HTTP
+          name: fleetlock
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            limits:
+              memory: 50Mi
+            requests:
+              cpu: 30m
+              memory: 30Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          stdin: false
+          tty: false
+          volumeMounts: []
+      imagePullSecrets: []
+      initContainers: []
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: fleetlock
+      terminationGracePeriodSeconds: 30
+      volumes: []

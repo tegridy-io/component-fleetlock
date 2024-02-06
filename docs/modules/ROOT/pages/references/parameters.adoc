@@ -24,7 +24,7 @@ The namespace in which to deploy this component.
 == `replicaCount`
 
 [horizontal]
-type:: int
+type:: integer
 default:: 1
 
 Number of replicas of this component.
@@ -33,13 +33,12 @@ Number of replicas of this component.
 == `service`
 
 [horizontal]
-type:: dict
+type:: dictionary
 default::
 +
 [source,yaml]
 ----
-service:
-  clusterIP: 10.43.0.11
+clusterIP: 10.43.0.11
 ----
 
 The clusterIP of the service, used by Zincati service.
@@ -50,20 +49,36 @@ See https://github.com/poseidon/fleetlock#usage[Fleetlock Docu] for more informa
 == `resources`
 
 [horizontal]
-type:: dict
+type:: dictionary
 default::
 +
 [source,yaml]
 ----
-resources:
-  requests:
-    cpu: 30m
-    memory: 30Mi
-  limits:
-    memory: 50Mi
+requests:
+  cpu: 30m
+  memory: 30Mi
+limits:
+  memory: 50Mi
 ----
 
 The resources requested by this component.
+
+
+== `prometheus`
+
+[horizontal]
+type:: dictionary
+default::
++
+[source,yaml]
+----
+enabled: false <1>
+service: {} <2>
+----
+<1> Enable servicemonitor.
+<2> Additional servicemonitor spec.
+
+Enable/configure service monitor.
 
 
 == Example

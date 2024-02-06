@@ -1,11 +1,13 @@
 // main template for fleetlock
 local kap = import 'lib/kapitan.libjsonnet';
 local kube = import 'lib/kube.libjsonnet';
+local prom = import 'lib/prometheus.libsonnet';
 local inv = kap.inventory();
 
 // The hiera parameters for the component
 local params = inv.parameters.fleetlock;
 local appName = 'fleetlock';
+local hasPrometheus = std.member(inv.applications, 'prometheus');
 
 local namespace = kube.Namespace(params.namespace.name) {
   metadata+: {
@@ -136,10 +138,36 @@ local service = kube.Service(appName) {
 };
 
 
+// Monitoring
+
+local serviceMonitor = kube._Object('monitoring.coreos.com/v1', 'ServiceMonitor', appName) {
+  metadata+: {
+    labels+: {
+      'app.kubernetes.io/managed-by': 'commodore',
+    },
+  },
+  spec+: {
+    selector: {
+      matchLabels: {
+        name: appName,
+      },
+    },
+    endpoints: [ {
+      path: '/metrics',
+      port: 'http',
+      scheme: 'http',
+      interval: '30s',
+    } ],
+  } + params.prometheus.service,
+};
+
+
 // Define outputs below
 {
-  '00_namespace': namespace,
+  '00_namespace': if hasPrometheus && params.prometheus.enabled then prom.RegisterNamespace(namespace) else namespace,
   '10_deployment': deployment,
   '10_service': service,
   '10_rbac': [ serviceAccount, clusterRole, clusterRoleBinding, role, roleBinding ],
+  [if params.prometheus.enabled then '20_monitoring']: serviceMonitor,
+  //   '20_alerts': alerts,
 }
